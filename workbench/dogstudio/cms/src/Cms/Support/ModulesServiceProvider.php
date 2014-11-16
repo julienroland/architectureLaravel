@@ -32,6 +32,7 @@ abstract class ModulesServiceProvider extends ServiceProvider
      */
     public function register()
     {
+
         if ($module = $this->getModule(func_get_args())) {
             /* *
              * Add Config
@@ -45,8 +46,9 @@ abstract class ModulesServiceProvider extends ServiceProvider
 
             $this->app->bind('module', function()
             {
-                return new Module($this->app['config'], new Filesystem);
+                return new ModuleManager($this->app['config'], new Filesystem);
             });
+            $this->app['module']->all();
             /*
              * Add routes, if available
              */
