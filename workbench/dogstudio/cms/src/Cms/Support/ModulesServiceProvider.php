@@ -1,103 +1,134 @@
 <?php namespace Cms\Support;
 
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Routing\Route;
-use Illuminate\Routing\Router;
-use Illuminate\Contracts\Routing\UrlGenerator;
-use Illuminate\Support\Facades\Lang;
+use Cms\Support\Module\Module;
 use Illuminate\Support\ServiceProvider;
 
 
 abstract class ModulesServiceProvider extends ServiceProvider
 {
+    private $file;
+    private $config;
+    private $translator;
+    private $view;
+    private $router;
+
     public function __construct($app)
     {
         parent::__construct($app);
-        $this->file = new Filesystem;
+        $this->file = $app['files'];
+        $this->router = $app['router'];
+        $this->config = $app['config'];
+        $this->view = $app['view'];
+        $this->translator = $app['translator'];
     }
 
-    /**
-     * Bootstrap the application events.
-     * @return void
-     */
+    public function register()
+    {
+        if ($module = $this->getModule(func_get_args())) {
+            $module = $this->getModuleInstance($module);
+            if ($module->active()) {
+                $this->loadModule($module);
+            }
+        }
+    }
+
     public function boot()
     {
         if ($module = $this->getModule(func_get_args())) {
+            $module = $this->getModuleInstance($module);
             $this->package('dogstudio/cms');
             /*
              * Register paths for: config, translator, view
              */
-            $this->package($module, $module, base_path() . '/modules/' . $module);
+            $this->package($module->getName(), $module->getName(), $module->getPath());
         }
     }
 
-    /**
-     * Register the service provider.
-     * @return void
-     */
-    public function register()
-    {
-        if ($module = $this->getModule(func_get_args())) {
-            /* *
-             * Add Config
-             *
-             * */
-            $this->app['config']->package($module, base_path() . '/modules/' . $module . '/Config', lcfirst($module));
-            $this->app['view']->addNamespace(lcfirst($module),
-                base_path() . '/modules/' . $module . '/Resources/views/');
-
-            $this->app['translator']->addNamespace(lcfirst($module),
-                base_path() . '/modules/' . $module . '/Resources/lang/');
-            if (file_exists($start = base_path() . '/modules/' . $module . '/start.php')) {
-                require $start;
-            }
-            foreach ($this->file->allFiles(base_path() . '/modules/' . $module . '/Providers') as $file) {
-                if ($this->file->exists($file)) {
-                    $this->app->register('\\' . $module . '\\Providers\\' . explode('.',
-                            $file->getRelativePathname())[0]);
-                }
-            }
-
-
-            $this->app->bind('modules', function () {
-                return new ModuleManager($this->app['files']);
-            });
-//            $this->app['module']->all();
-            /*
-             * Add routes, if available
-             */
-            $routesFile = base_path() . '/modules/' . $module . '/Http/routes.php';
-            if (file_exists($routesFile)) {
-
-                $router = $this->app['router'];
-                $config = $this->app['config'];
-                $app = $this->app;
-                require $routesFile;
-            }
-        }
-    }
-
-    /**
-     * Get the services provided by the provider.
-     * @return array
-     */
-    public function provides()
-    {
-        return ['modules'];
-    }
-
-    public function getModule($args)
+    private function getModule($args)
     {
         $module = (isset($args[0]) and is_string($args[0])) ? $args[0] : null;
         return $module;
     }
 
-    /**
-     * Registers a new console (artisan) command
-     * @param $key   The command name
-     * @param $class The command class
-     * @return void
-     */
+    private function getModuleInstance($module)
+    {
+        $this->app->singleton($module, function ($app) use ($module) {
+            return new Module($module, new ModuleManager($app['files']));
+        });
+        return $this->app[$module];
+    }
+
+    private function loadModule($module)
+    {
+        $this->bindToContainer();
+        $this->addConfigs($module);
+        $this->getModuleStarter($module);
+        $this->registerModulesProviders($module);
+        $this->loadRoute($module);
+    }
+
+    private function bindToContainer()
+    {
+        $this->app->bind('modules', function () {
+            return new ModuleManager($this->file);
+        });
+    }
+
+    private function addConfigs($module)
+    {
+        $this->addConfig($module);
+        $this->addView($module);
+        $this->addTranslations($module);
+    }
+
+
+    private function getModuleStarter($module)
+    {
+        if (file_exists($start = $module->getStarterFile())) {
+            require $start;
+        }
+    }
+
+    private function registerModulesProviders($module)
+    {
+        foreach ($this->file->allFiles($module->getProvidersPath()) as $file) {
+            if ($this->file->exists($file)) {
+                $filePath = explode('.', $file->getRelativePathname())[0];
+                $module->addProvider($this->app, $filePath);
+            }
+        }
+    }
+
+    private function loadRoute($module)
+    {
+        $routesFile = $module->getRouteFile();
+        if ($this->file->exists($routesFile)) {
+            $router = $this->router;
+            $config = $this->config;
+            $app = $this->app;
+            require $routesFile;
+        }
+    }
+
+    private function addConfig($module)
+    {
+        $this->config->package($module, $module->getConfigPath(),
+            lcfirst($module));
+    }
+
+    private function addView($module)
+    {
+        $this->view->addNamespace(lcfirst($module),
+            base_path() . '/modules/' . $module . '/Resources/views/');
+    }
+
+    private function addTranslations($module)
+    {
+        $this->translator->addNamespace(lcfirst($module),
+            base_path() . '/modules/' . $module . '/Resources/lang/');
+    }
+
+
     public function registerConsoleCommand($key, $class)
     {
         $key = 'command.' . $key;
@@ -107,4 +138,11 @@ abstract class ModulesServiceProvider extends ServiceProvider
 
         $this->commands($key);
     }
+
+    public function provides()
+    {
+        return ['modules'];
+    }
+
+
 }

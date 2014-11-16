@@ -16,7 +16,6 @@ class Module
         $this->manager = $manager;
         $this->file = new Filesystem;
         $this->path = $this->getPath($this->name);
-        $this->fluent = new Fluent;
     }
 
     /**
@@ -197,15 +196,36 @@ class Module
         return $this->name;
     }
 
-    private function getPath($name)
+    public function getPath()
     {
-        return base_path() . '/modules/' . $name . '/';
+        return base_path() . '/modules/' . $this->name . '/';
     }
 
-    /**
-     * @throws NotFoundException
-     * @throws \Illuminate\Filesystem\FileNotFoundException
-     */
+    public function getConfigPath()
+    {
+        return base_path() . '/modules/' . $this->name . '/Config';
+    }
+
+    public function getStarterFile()
+    {
+        return base_path() . '/modules/' . $this->name . '/start.php';
+    }
+
+    public function getProvidersPath()
+    {
+        return base_path() . '/modules/' . $this->name . '/Providers';
+    }
+
+    public function getRouteFile()
+    {
+        return base_path() . '/modules/' . $this->name . '/Http/routes.php';
+    }
+
+    public function addProvider($app, $providerPath)
+    {
+        $app->register('\\' . $this->name . '\\Providers\\' . $providerPath);
+    }
+
     private function getModuleConfig()
     {
         if (!$this->file->exists($this->path . 'module.json')) {
