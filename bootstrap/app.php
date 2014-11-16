@@ -11,11 +11,8 @@
 |
 */
 
-//$app = new Illuminate\Foundation\Application(
-//	realpath(__DIR__.'/..')
-//);
-$app = new Cms\Support\LaravelApplication(
-realpath(__DIR__.'/..')
+$app = new Cms\Application\LaravelApplication(
+    realpath(__DIR__ . '/..')
 );
 /*
 |--------------------------------------------------------------------------
@@ -29,18 +26,18 @@ realpath(__DIR__.'/..')
 */
 
 $app->singleton(
-	'Illuminate\Contracts\Http\Kernel',
-	'Cms\Router\Kernel'
+    'Illuminate\Contracts\Http\Kernel',
+    'Cms\Router\Kernel'
 );
 
 $app->singleton(
-	'Illuminate\Contracts\Console\Kernel',
+    'Illuminate\Contracts\Console\Kernel',
     'Cms\Console\Kernel'
 );
 
 $app->singleton(
-	'Illuminate\Contracts\Debug\ExceptionHandler',
-	'Illuminate\Foundation\Debug\ExceptionHandler'
+    'Illuminate\Contracts\Debug\ExceptionHandler',
+    'Illuminate\Foundation\Debug\ExceptionHandler'
 );
 
 /*
