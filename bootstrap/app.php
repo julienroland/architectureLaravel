@@ -11,10 +11,12 @@
 |
 */
 
-$app = new Illuminate\Foundation\Application(
-	realpath(__DIR__.'/..')
+//$app = new Illuminate\Foundation\Application(
+//	realpath(__DIR__.'/..')
+//);
+$app = new Cms\Support\LaravelApplication(
+realpath(__DIR__.'/..')
 );
-
 /*
 |--------------------------------------------------------------------------
 | Create The Application
@@ -51,5 +53,4 @@ $app->singleton(
 | from the actual running of the application and sending responses.
 |
 */
-
 return $app;

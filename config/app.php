@@ -50,7 +50,7 @@ return [
     */
 
     'adminAvailableLocale' => ['fr', 'en', 'de'],
-    'locale' => 'fr',
+    'locale' => 'en',
     /*
     |--------------------------------------------------------------------------
     | Application Fallback Locale

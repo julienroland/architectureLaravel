@@ -40,6 +40,7 @@ abstract class ModulesServiceProvider extends ServiceProvider
                 $router = $this->app['router'];
                 $config= $this->app['config'];
                 $app= $this->app;
+            dd($this->app['translator']);
                 require $routesFile;
             }
         }
