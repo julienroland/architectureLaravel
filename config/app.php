@@ -154,8 +154,8 @@ return [
          *
          * */
         'Core\ServiceProvider',
-        'User\ServiceProvider',
-        'Dashboard\ServiceProvider',
+//        'User\ServiceProvider',
+//        'Dashboard\ServiceProvider',
 
     ],
     /*
