@@ -10,6 +10,11 @@ use Illuminate\Support\ServiceProvider;
 
 abstract class ModulesServiceProvider extends ServiceProvider
 {
+    public function __construct($app)
+    {
+        parent::__construct($app);
+        $this->file = new Filesystem;
+    }
 
     /**
      * Bootstrap the application events.
@@ -18,7 +23,7 @@ abstract class ModulesServiceProvider extends ServiceProvider
     public function boot()
     {
         if ($module = $this->getModule(func_get_args())) {
-
+            $this->package('dogstudio/cms');
             /*
              * Register paths for: config, translator, view
              */
@@ -32,7 +37,6 @@ abstract class ModulesServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
         if ($module = $this->getModule(func_get_args())) {
             /* *
              * Add Config
@@ -42,13 +46,23 @@ abstract class ModulesServiceProvider extends ServiceProvider
             $this->app['view']->addNamespace(lcfirst($module),
                 base_path() . '/modules/' . $module . '/Resources/views/');
 
-            Lang::addNamespace(lcfirst($module), base_path() . '/modules/' . $module . '/Resources/lang/');
+            $this->app['translator']->addNamespace(lcfirst($module),
+                base_path() . '/modules/' . $module . '/Resources/lang/');
+            if (file_exists($start = base_path() . '/modules/' . $module . '/start.php')) {
+                require $start;
+            }
+            foreach ($this->file->allFiles(base_path() . '/modules/' . $module . '/Providers') as $file) {
+                if ($this->file->exists($file)) {
+                    $this->app->register('\\' . $module . '\\Providers\\' . explode('.',
+                            $file->getRelativePathname())[0]);
+                }
+            }
 
-            $this->app->bind('module', function()
-            {
-                return new ModuleManager($this->app['config'], new Filesystem);
+
+            $this->app->bind('modules', function () {
+                return new ModuleManager($this->app['files']);
             });
-            $this->app['module']->all();
+//            $this->app['module']->all();
             /*
              * Add routes, if available
              */
@@ -69,7 +83,7 @@ abstract class ModulesServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return [];
+        return ['modules'];
     }
 
     public function getModule($args)

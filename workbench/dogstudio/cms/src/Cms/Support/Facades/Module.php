@@ -7,7 +7,7 @@ class Module extends Facade
 
     protected static function getFacadeAccessor()
     {
-        return 'module';
+        return 'modules';
     }
 
 }

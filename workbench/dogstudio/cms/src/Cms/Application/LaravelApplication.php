@@ -8,7 +8,7 @@ use Illuminate\Routing\RoutingServiceProvider;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 use Illuminate\Translation\TranslationServiceProvider;
 
-class LaravelApplication extends Application implements ApplicationContract
+class LaravelApplication extends Application
 {
 
     /**

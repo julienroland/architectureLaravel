@@ -1,24 +1,39 @@
 <?php  namespace Cms\Support;
 
 use Cms\Exceptions\NotFoundException;
+use Cms\Support\Module\Module;
 
 class ModuleManager
 {
     private $path = 'modules';
     private $assetPath = 'Assets';
+    private $activeStatus = 1;
+    private $inactiveStatus = 0;
     private $config;
 
-    public function __construct($config, $file)
+    public function __construct($file)
     {
-        $this->config = $config;
         $this->file = $file;
     }
 
     public function all()
     {
+        $modules = [];
         $directories = $this->file->directories(base_path() . '/modules');
         $this->hasNotModule($directories);
-        return $directories;
+        foreach ($directories as $module) {
+            $modules[] = new Module(basename($module), $this);
+        }
+        return $modules;
+    }
+
+    public function getEnabled()
+    {
+        return $this->filterByStatus($this->activeStatus);
+    }
+    public function getDisabled()
+    {
+        return $this->filterByStatus($this->inactiveStatus);
     }
 
     public function asset($module, $asset)
@@ -70,5 +85,24 @@ class ModuleManager
         if (empty($directories)) {
             throw new NoModuleRegister("No module are register");
         }
+    }
+
+    private function filterByStatus($activeStatus)
+    {
+        $modules = [];
+        if ($activeStatus === 1) {
+            foreach ($this->all() as $module) {
+                if ($module->active()) {
+                    $modules[] = $module;
+                }
+            }
+        } else {
+            foreach ($this->all() as $module) {
+                if ($module->inactive()) {
+                    $modules[] = $module;
+                }
+            }
+        }
+        return $modules;
     }
 }
