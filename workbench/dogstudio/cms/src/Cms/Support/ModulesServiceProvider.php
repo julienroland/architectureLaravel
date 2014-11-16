@@ -1,8 +1,10 @@
 <?php namespace Cms\Support;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Illuminate\Contracts\Routing\UrlGenerator;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\ServiceProvider;
 
 
@@ -31,6 +33,20 @@ abstract class ModulesServiceProvider extends ServiceProvider
     public function register()
     {
         if ($module = $this->getModule(func_get_args())) {
+            /* *
+             * Add Config
+             *
+             * */
+            $this->app['config']->package($module, base_path() . '/modules/' . $module . '/Config', lcfirst($module));
+            $this->app['view']->addNamespace(lcfirst($module),
+                base_path() . '/modules/' . $module . '/Resources/views/');
+
+            Lang::addNamespace(lcfirst($module), base_path() . '/modules/' . $module . '/Resources/lang/');
+
+            $this->app->bind('module', function()
+            {
+                return new Module($this->app['config'], new Filesystem);
+            });
             /*
              * Add routes, if available
              */
@@ -38,9 +54,8 @@ abstract class ModulesServiceProvider extends ServiceProvider
             if (file_exists($routesFile)) {
 
                 $router = $this->app['router'];
-                $config= $this->app['config'];
-                $app= $this->app;
-            dd($this->app['translator']);
+                $config = $this->app['config'];
+                $app = $this->app;
                 require $routesFile;
             }
         }

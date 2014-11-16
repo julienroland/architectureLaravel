@@ -154,8 +154,8 @@ return [
          *
          * */
         'Core\ServiceProvider',
-//        'User\ServiceProvider',
-//        'Dashboard\ServiceProvider',
+        'User\ServiceProvider',
+        'Dashboard\ServiceProvider',
 
     ],
     /*
@@ -220,6 +220,7 @@ return [
         'LaravelLocalization' => 'Mcamara\LaravelLocalization\Facades\LaravelLocalization',
         'Sentry' => 'Cartalyst\Sentry\Facades\Laravel\Sentry',
         'Form' => 'Illuminate\Html\FormFacade',
+        'Module' => 'Cms\Support\Facades\Module',
 
 
     ],
