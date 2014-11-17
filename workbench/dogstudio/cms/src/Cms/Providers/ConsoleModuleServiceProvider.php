@@ -16,7 +16,7 @@ class ConsoleModuleServiceProvider extends ServiceProvider
 //        'GenerateRouteProvider',
 //        'Install',
 //        'List',
-//        'Migrate',
+        'Migrate',
 //        'MigrateRefresh',
 //        'MigrateReset',
 //        'MigrateRollback',
