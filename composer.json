@@ -16,7 +16,8 @@
         "guzzlehttp/guzzle": "~5.0",
         "mcamara/laravel-localization": "dev-Laravel5Support",
         "dimsav/laravel-translatable": "dev-development",
-        "intervention/image": "~2.0"
+        "intervention/image": "~2.0",
+		"cartalyst/sentry": "2.1.*"
 	},
     "repositories": [
         {
