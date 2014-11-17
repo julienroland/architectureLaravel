@@ -1,7 +1,7 @@
 <?php namespace Cms\Providers;
 
-use Cms\Support\Module\Module;
-use Cms\Support\ModuleManager;
+use Cms\Modules\Module;
+use Cms\Modules\ModuleManager;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
@@ -14,18 +14,8 @@ class CmsServiceProvider extends ServiceProvider
         $this->app = $app;
     }
 
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
     protected $defer = false;
 
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     */
     public function boot()
     {
         $modules = $this->getEnableModulesList();
@@ -34,14 +24,9 @@ class CmsServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->register('ConsoleServiceProvider');
+        $this->app->register(__NAMESPACE__ . '\\ConsoleModuleServiceProvider');
     }
 
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
     public function provides()
     {
         return [];

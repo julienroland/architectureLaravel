@@ -1,6 +1,7 @@
-<?php namespace Cms\Support;
+<?php namespace Cms\Providers;
 
-use Cms\Support\Module\Module;
+use Cms\Modules\Module;
+use Cms\Modules\ModuleManager;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 

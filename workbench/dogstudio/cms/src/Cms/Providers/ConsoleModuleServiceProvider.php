@@ -1,8 +1,8 @@
-<?php  namespace Cms\Providers;
+<?php namespace Cms\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-class ConsoleServiceProvider extends ServiceProvider
+class ConsoleModuleServiceProvider extends ServiceProvider
 {
     protected $namespace = 'Cms\\Console\\Module\\Commands\\';
     protected $commandsList = [
@@ -25,10 +25,7 @@ class ConsoleServiceProvider extends ServiceProvider
 //        'Publish',
 //        'PublishMigration',
         'Seed',
-//        'SeedMake',
-//        'Setup',
-//        'Update',
-//        'Use'
+
     ];
 
     public function register()

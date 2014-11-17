@@ -1,4 +1,4 @@
-<?php namespace Cms\Support\Module;
+<?php namespace Cms\Modules;
 
 use Cms\Exceptions\NotFoundException;
 use Illuminate\Filesystem\Filesystem;

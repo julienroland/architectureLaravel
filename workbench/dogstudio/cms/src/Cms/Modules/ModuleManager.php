@@ -1,7 +1,7 @@
-<?php  namespace Cms\Support;
+<?php  namespace Cms\Modules;
 
 use Cms\Exceptions\NotFoundException;
-use Cms\Support\Module\Module;
+use Cms\Modules\Module;
 
 class ModuleManager
 {

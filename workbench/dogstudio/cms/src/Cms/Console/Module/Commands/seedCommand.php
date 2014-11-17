@@ -1,5 +1,6 @@
 <?php namespace Cms\Console\Module\Commands;
 
+use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
 class SeedCommand extends Command
@@ -12,13 +13,12 @@ class SeedCommand extends Command
     public function fire()
     {
         $this->module = $this->laravel['modules'];
-        dd($this->module);
-        $module = Str::studly($this->argument('module')) ?: $this->getModuleName();
+        $module = Str::studly($this->argument('module'));
         if ($module) {
-            if ($this->module->has($module)) {
+//            if ($this->module->has($module)) {
                 $this->dbseed($module);
                 return $this->info("Module [$module] seeded.");
-            }
+//            }
             return $this->error("Module [$module] does not exists.");
         }
         foreach ($this->module->all() as $name) {
