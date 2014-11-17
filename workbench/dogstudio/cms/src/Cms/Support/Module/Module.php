@@ -6,9 +6,9 @@ use Illuminate\Support\Fluent;
 
 class Module
 {
-
     private $name;
     private $manager;
+    private $boot = false;
 
     public function __construct($name, $manager)
     {
@@ -100,21 +100,19 @@ class Module
         return false;
     }
 
-    /**
-     * Enable the current module.
-     *
-     * @return bool
-     */
+    public function hasLauncher()
+    {
+        if ($this->file->exists(base_path() . '/modules/' . $this->name . '/ServiceProvider.php')) {
+            return true;
+        }
+        return false;
+    }
+
     public function enable()
     {
         return $this->repository->enable($this->name);
     }
 
-    /**
-     * Disable the current module.
-     *
-     * @return bool
-     */
     public function disable()
     {
         return $this->repository->disable($this->name);
@@ -176,12 +174,15 @@ class Module
         return $this->getPath() . '/modules.json';
     }
 
-    /**
-     * Register the start file from current module.
-     *
-     * @return string
-     */
-    public function register()
+    public function register($app)
+    {
+        $isRegistered = $app->register('\\' . $this->name . '\\ServiceProvider');
+        if ($isRegistered) {
+            $this->setBooted();
+        }
+    }
+
+    public function addToBoot()
     {
         include_once $this->getStartFilePath();
     }
@@ -239,6 +240,11 @@ class Module
     private function getStatus()
     {
         return $this->config->active;
+    }
+
+    private function setBooted()
+    {
+        $this->boot = true;
     }
 
 }

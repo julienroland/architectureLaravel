@@ -1,6 +1,7 @@
 <?php namespace Cms\Support;
 
 use Cms\Support\Module\Module;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 
@@ -15,7 +16,7 @@ abstract class ModulesServiceProvider extends ServiceProvider
     public function __construct($app)
     {
         parent::__construct($app);
-        $this->file = $app['files'];
+        $this->file = new Filesystem;
         $this->router = $app['router'];
         $this->config = $app['config'];
         $this->view = $app['view'];
@@ -24,22 +25,18 @@ abstract class ModulesServiceProvider extends ServiceProvider
 
     public function register()
     {
-        if ($module = $this->getModule(func_get_args())) {
-            $module = $this->getModuleInstance($module);
-            if ($module->active()) {
-                $this->loadModule($module);
-            }
-        }
     }
 
     public function boot()
     {
+
         if ($module = $this->getModule(func_get_args())) {
             $module = $this->getModuleInstance($module);
             $this->package('dogstudio/cms');
-            /*
-             * Register paths for: config, translator, view
-             */
+            if ($module->active()) {
+                $this->loadModule($module);
+            }
+
             $this->package($module->getName(), $module->getName(), $module->getPath());
         }
     }
@@ -52,7 +49,7 @@ abstract class ModulesServiceProvider extends ServiceProvider
 
     private function getModuleInstance($module)
     {
-        $this->app->singleton($module, function ($app) use ($module) {
+        $this->app->bind($module, function ($app) use ($module) {
             return new Module($module, new ModuleManager($app['files']));
         });
         return $this->app[$module];

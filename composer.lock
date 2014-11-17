@@ -4,21 +4,21 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "71c81ccbc0ce5476fdf7d1d6c20b9684",
+    "hash": "dcd5109ca903b26473578cf546fb8a24",
     "packages": [
         {
             "name": "cartalyst/sentry",
-            "version": "v2.1.0",
+            "version": "2.1.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cartalyst/sentry.git",
-                "reference": "f17a7b868a9e5b81bee1b2ce483e90dbfa64c46d"
+                "reference": "57eb4ec33b342d621d8e7e499492f797443c0428"
             },
             "dist": {
-                "type": "tar",
-                "url": "http://packages.dogstudio.be/dist/cartalyst-sentry-f17a7b868a9e5b81bee1b2ce483e90dbfa64c46d-zip-26cb30.tar",
-                "reference": "f17a7b868a9e5b81bee1b2ce483e90dbfa64c46d",
-                "shasum": "975864691c7057e6bd6f1dd22c6efb5461b1e370"
+                "type": "zip",
+                "url": "https://api.github.com/repos/cartalyst/sentry/zipball/57eb4ec33b342d621d8e7e499492f797443c0428",
+                "reference": "57eb4ec33b342d621d8e7e499492f797443c0428",
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
@@ -104,10 +104,10 @@
                 "security"
             ],
             "support": {
-                "source": "https://github.com/cartalyst/sentry/tree/v2.1.0",
+                "source": "https://github.com/cartalyst/sentry/tree/2.1",
                 "issues": "https://github.com/cartalyst/sentry/issues"
             },
-            "time": "2013-12-07 21:12:19"
+            "time": "2014-08-28 12:03:39"
         },
         {
             "name": "classpreloader/classpreloader",

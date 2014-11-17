@@ -10,7 +10,6 @@
         "filp/whoops": "~1.0",
         "patchwork/utf8": "~1.2",
         "laravel/elixir": "~1.0",
-        "cartalyst/sentry": "2.1",
         "laracasts/commander": "dev-master",
         "laracasts/flash": "~1.0",
         "laracasts/presenter": "0.2.*",

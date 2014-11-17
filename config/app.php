@@ -138,7 +138,6 @@ return [
         'Laracasts\Commander\CommanderServiceProvider',
         'Laracasts\Flash\FlashServiceProvider',
         'Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider',
-        'Cartalyst\Sentry\SentryServiceProvider',
         'Illuminate\Html\HtmlServiceProvider',
 
         /* *
@@ -153,9 +152,9 @@ return [
          * CMS
          *
          * */
-        'Core\ServiceProvider',
-        'User\ServiceProvider',
-        'Dashboard\ServiceProvider',
+//        'Core\ServiceProvider',
+//        'User\ServiceProvider',
+//        'Dashboard\ServiceProvider',
 
     ],
     /*
@@ -218,7 +217,7 @@ return [
          * */
         'Flash' => 'Laracasts\Flash\Flash',
         'LaravelLocalization' => 'Mcamara\LaravelLocalization\Facades\LaravelLocalization',
-        'Sentry' => 'Cartalyst\Sentry\Facades\Laravel\Sentry',
+//        'Sentry' => 'Cartalyst\Sentry\Facades\Laravel\Sentry',
         'Form' => 'Illuminate\Html\FormFacade',
         'Module' => 'Cms\Support\Facades\Module',
 

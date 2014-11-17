@@ -2,9 +2,9 @@
 # vi: set ft=ruby :
 
 # Server Configuration
-hostname      = "emulsion2.dev"
-server_name   = "debian76-emulsion"
-server_ip       = "192.168.22.20"
+hostname      = "cms.dev"
+server_name   = "debian76-cms"
+server_ip       = "172.100.22.20"
 
 
 # =======================
