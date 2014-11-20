@@ -52,6 +52,7 @@ class SeedCommand extends Command
         return array(
             array('class', null, InputOption::VALUE_OPTIONAL, 'The class name of the root seeder', null),
             array('database', null, InputOption::VALUE_OPTIONAL, 'The database connection to seed.'),
+            array('force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production.'),
         );
     }
 }

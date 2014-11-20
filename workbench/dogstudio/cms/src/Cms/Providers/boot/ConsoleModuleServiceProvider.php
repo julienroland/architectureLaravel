@@ -1,5 +1,7 @@
-<?php namespace Cms\Providers;
+<?php namespace Cms\Providers\Boot;
 
+use Cms\Console\Module\Commands\MigrateCommand;
+use Cms\Console\Module\Commands\SeedCommand;
 use Illuminate\Support\ServiceProvider;
 
 class ConsoleModuleServiceProvider extends ServiceProvider
@@ -30,19 +32,37 @@ class ConsoleModuleServiceProvider extends ServiceProvider
 
     public function register()
     {
-        foreach ($this->commandsList as $command)
-        {
-            $this->commands($this->namespace . $command . 'Command');
+        foreach ($this->commandsList as $command) {
+            $this->{'register' . $command . 'Command'}();
         }
+        $this->commands(
+            'command.module.migrate',
+            'command.module.seed');
+
+    }
+
+    protected function registerMigrateCommand()
+    {
+        $this->app->singleton('command.module.migrate', function ($app) {
+
+            return new MigrateCommand($app, $app['migrator'], $app['modules']);
+        });
+    }
+
+    protected function registerSeedCommand()
+    {
+        $this->app->singleton('command.module.seed', function () {
+            return new SeedCommand;
+        });
     }
 
     public function providers()
     {
         $provides = [];
-        foreach ($this->commandsList as $command)
-        {
+        foreach ($this->commandsList as $command) {
             $provides[] = $this->namespace . $command . 'Command';
         }
         return $provides;
     }
+
 }

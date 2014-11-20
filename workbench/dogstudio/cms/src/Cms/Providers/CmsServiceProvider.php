@@ -1,12 +1,13 @@
 <?php namespace Cms\Providers;
 
-use Cms\Modules\Module;
-use Cms\Modules\ModuleManager;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class CmsServiceProvider extends ServiceProvider
 {
+    private $bootPath = 'Boot';
+    private $bootedPath = 'Booted';
+
     public function __construct($app)
     {
         parent::__construct($app);
@@ -18,13 +19,13 @@ class CmsServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $modules = $this->getEnableModulesList();
-        $this->registerModulesProviders($modules);
+        $this->registerOnBooted();
     }
 
     public function register()
     {
-        $this->app->register(__NAMESPACE__ . '\\ConsoleModuleServiceProvider');
+        $this->registerOnBoot();
+
     }
 
     public function provides()
@@ -32,39 +33,46 @@ class CmsServiceProvider extends ServiceProvider
         return [];
     }
 
-    private function registerModulesProviders($modules)
+    private function registerOnBoot()
     {
-        foreach ($modules as $module) {
-            if ($module->hasLauncher()) {
-                $module->register($this->app);
+        $files = $this->getBootFolder();
+        if (!empty($files)) {
+            foreach ($files as $file) {
+                $this->app->register(__NAMESPACE__ . '\\' . $this->bootPath . '\\' . $this->getClassName($file));
             }
         }
     }
 
-    public function getModuleInstance($module)
-    {
-        return new Module($this->getModuleName($module), new ModuleManager($this->file));
-    }
 
-    private function getEnableModulesList()
+    private function registerOnBooted()
     {
-        $modules = [];
-        $modulesList = $this->file->directories(base_path() . '/modules/');
-        foreach ($modulesList as $module) {
-            $module = $this->getModuleInstance($module);
-            if ($module->active()) {
-                $modules[] = $module;
+        $files = $this->getBootedFolder();
+        if (!empty($files)) {
+            foreach ($files as $file) {
+                $this->app->register(__NAMESPACE__ . '\\' . $this->bootedPath . '\\' . $this->getClassName($file));
             }
         }
-        return $modules;
-
     }
 
-    private function getModuleName($module)
+    private function getBootFolder()
     {
-        $ex = explode('/', $module);
-        $nb = count($ex);
-        return $ex[$nb - 1];
+        return $this->file->files(__DIR__ . '/' . $this->bootPath);
     }
+
+    private function getBootedFolder()
+    {
+        return $this->file->files(__DIR__ . '/' . $this->bootedPath);
+    }
+
+    private function getClassName($file)
+    {
+        $list = explode('/', explode('.', $file)[0]);
+        $className = $list[count($list) - 1];
+
+        if (!is_null($className) && !empty($className)) {
+            return $className;
+        }
+    }
+
 
 }

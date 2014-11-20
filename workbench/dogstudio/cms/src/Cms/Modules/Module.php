@@ -72,6 +72,11 @@ class Module
         return $this->getPath() . '/' . $extra;
     }
 
+    public function getMigrationPath()
+    {
+        return $this->getPath() . 'Database/Migrations';
+    }
+
     /**
      * Delete module.
      *

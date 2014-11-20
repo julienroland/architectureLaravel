@@ -6,7 +6,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 
-abstract class ModulesServiceProvider extends ServiceProvider
+abstract class BaseModuleServiceProvider extends ServiceProvider
 {
     private $file;
     private $config;
