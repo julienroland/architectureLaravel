@@ -139,6 +139,8 @@ return [
         'Laracasts\Flash\FlashServiceProvider',
         'Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider',
         'Illuminate\Html\HtmlServiceProvider',
+        'Baum\BaumServiceProvider',
+        'Cartalyst\Sentry\SentryServiceProvider',
         /* *
        * Dogstudio/cms
        *
@@ -148,9 +150,7 @@ return [
          * CMS
          *
          * */
-//        'Core\ServiceProvider',
-//        'User\ServiceProvider',
-//        'Dashboard\ServiceProvider',
+
 
     ],
     /*
@@ -180,7 +180,7 @@ return [
 
         'App' => 'Illuminate\Support\Facades\App',
         'Artisan' => 'Illuminate\Support\Facades\Artisan',
-        'Auth' => 'Illuminate\Support\Facades\Auth',
+//        'Auth' => 'Illuminate\Support\Facades\Auth',
         'Blade' => 'Illuminate\Support\Facades\Blade',
         'Cache' => 'Illuminate\Support\Facades\Cache',
         'Config' => 'Illuminate\Support\Facades\Config',
@@ -213,7 +213,7 @@ return [
          * */
         'Flash' => 'Laracasts\Flash\Flash',
         'LaravelLocalization' => 'Mcamara\LaravelLocalization\Facades\LaravelLocalization',
-//        'Sentry' => 'Cartalyst\Sentry\Facades\Laravel\Sentry',
+        'Auth' => 'Cartalyst\Sentry\Facades\Laravel\Sentry',
         'Form' => 'Illuminate\Html\FormFacade',
 
 

@@ -4,8 +4,61 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0b490a89980f05c35e01c0e1a24d119d",
+    "hash": "5d7fa454a28fdf1e88b79ee9a08146dc",
     "packages": [
+        {
+            "name": "baum/baum",
+            "version": "1.0.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/etrepat/baum.git",
+                "reference": "b868b70bde6e9abb48a4cd5c8244eea9cb4eec4e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/etrepat/baum/zipball/b868b70bde6e9abb48a4cd5c8244eea9cb4eec4e",
+                "reference": "b868b70bde6e9abb48a4cd5c8244eea9cb4eec4e",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "4.*|5.*",
+                "illuminate/database": "4.*|5.*",
+                "illuminate/filesystem": "4.*|5.*",
+                "illuminate/support": "4.*|5.*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "d11wtq/boris": "~1.0",
+                "mockery/mockery": "~0.9",
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Baum": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Estanislau Trepat",
+                    "email": "estanis@etrepat.com",
+                    "homepage": "http://etrepat.com"
+                }
+            ],
+            "description": "Baum is an implementation of the Nested Set pattern for Eloquent models.",
+            "keywords": [
+                "Laravel 4",
+                "database",
+                "eloquent",
+                "laravel",
+                "nested set"
+            ],
+            "time": "2014-09-30 17:04:36"
+        },
         {
             "name": "cartalyst/sentry",
             "version": "2.1.x-dev",
@@ -485,12 +538,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/RingPHP.git",
-                "reference": "e3b00e43b279606a51493b3d5c9c5c2598cd659e"
+                "reference": "05b4e5fe20ba6678b5e5825031c40ed725b69b56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/RingPHP/zipball/e3b00e43b279606a51493b3d5c9c5c2598cd659e",
-                "reference": "e3b00e43b279606a51493b3d5c9c5c2598cd659e",
+                "url": "https://api.github.com/repos/guzzle/RingPHP/zipball/05b4e5fe20ba6678b5e5825031c40ed725b69b56",
+                "reference": "05b4e5fe20ba6678b5e5825031c40ed725b69b56",
                 "shasum": ""
             },
             "require": {
@@ -527,7 +580,7 @@
                     "homepage": "https://github.com/mtdowling"
                 }
             ],
-            "time": "2014-11-16 02:36:38"
+            "time": "2014-11-20 22:27:50"
         },
         {
             "name": "guzzlehttp/streams",
@@ -950,12 +1003,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "0010d0ef7714580f82e52850c12777b3a9130bcb"
+                "reference": "2d1c6da736c84f8bea5ef82e4af4afd6747838e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/0010d0ef7714580f82e52850c12777b3a9130bcb",
-                "reference": "0010d0ef7714580f82e52850c12777b3a9130bcb",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/2d1c6da736c84f8bea5ef82e4af4afd6747838e2",
+                "reference": "2d1c6da736c84f8bea5ef82e4af4afd6747838e2",
                 "shasum": ""
             },
             "require": {
@@ -1015,7 +1068,7 @@
                 "illuminate/workbench": "self.version"
             },
             "require-dev": {
-                "aws/aws-sdk-php": "~2.6",
+                "aws/aws-sdk-php": "~2.7",
                 "iron-io/iron_mq": "~1.5",
                 "mockery/mockery": "~0.9",
                 "pda/pheanstalk": "~3.0",
@@ -1058,7 +1111,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2014-11-20 19:20:12"
+            "time": "2014-11-21 18:52:50"
         },
         {
             "name": "league/flysystem",
@@ -1066,12 +1119,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "2af62a3e493d5b3b327ccc8116b237a080f72098"
+                "reference": "525667bd6eeff3ec107404939214c4c799602675"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/2af62a3e493d5b3b327ccc8116b237a080f72098",
-                "reference": "2af62a3e493d5b3b327ccc8116b237a080f72098",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/525667bd6eeff3ec107404939214c4c799602675",
+                "reference": "525667bd6eeff3ec107404939214c4c799602675",
                 "shasum": ""
             },
             "require": {
@@ -1145,7 +1198,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2014-11-20 16:57:35"
+            "time": "2014-11-21 14:50:37"
         },
         {
             "name": "mcamara/laravel-localization",
@@ -1968,12 +2021,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "87fe2b56b0b8c10fc60a2b4ac76c285e1fc38888"
+                "reference": "7126a57b17599242b400f6bdcd4d65448636ac63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/87fe2b56b0b8c10fc60a2b4ac76c285e1fc38888",
-                "reference": "87fe2b56b0b8c10fc60a2b4ac76c285e1fc38888",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/7126a57b17599242b400f6bdcd4d65448636ac63",
+                "reference": "7126a57b17599242b400f6bdcd4d65448636ac63",
                 "shasum": ""
             },
             "require": {
@@ -2012,7 +2065,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "http://symfony.com",
-            "time": "2014-11-20 13:24:23"
+            "time": "2014-11-21 16:08:03"
         },
         {
             "name": "symfony/http-kernel",
