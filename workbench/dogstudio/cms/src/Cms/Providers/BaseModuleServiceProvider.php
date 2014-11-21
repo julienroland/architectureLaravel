@@ -30,7 +30,6 @@ abstract class BaseModuleServiceProvider extends ServiceProvider
 
     public function boot()
     {
-
         if ($module = $this->getModule(func_get_args())) {
             $module = $this->getModuleInstance($module);
             $this->package('dogstudio/cms');

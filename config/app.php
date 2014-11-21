@@ -139,7 +139,6 @@ return [
         'Laracasts\Flash\FlashServiceProvider',
         'Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider',
         'Illuminate\Html\HtmlServiceProvider',
-
         /* *
        * Dogstudio/cms
        *
@@ -147,7 +146,6 @@ return [
         'Cms\Providers\CmsServiceProvider',
         'Cms\Router\RouterServiceProvider',
         'Cms\Errors\ErrorsServiceProvider',
-
         /* *
          * CMS
          *
@@ -180,7 +178,7 @@ return [
     |
     */
 
-    'aliases' => [
+    'aliases' => array_merge(include(base_path() . '/modules/core/aliases.php'), [
 
         'App' => 'Illuminate\Support\Facades\App',
         'Artisan' => 'Illuminate\Support\Facades\Artisan',
@@ -219,9 +217,8 @@ return [
         'LaravelLocalization' => 'Mcamara\LaravelLocalization\Facades\LaravelLocalization',
 //        'Sentry' => 'Cartalyst\Sentry\Facades\Laravel\Sentry',
         'Form' => 'Illuminate\Html\FormFacade',
-        'Module' => 'Cms\Support\Facades\Module',
 
 
-    ],
+    ]),
 
 ];

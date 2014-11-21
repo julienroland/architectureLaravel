@@ -25,7 +25,6 @@ class CmsServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerOnBoot();
-
     }
 
     public function provides()
@@ -73,6 +72,7 @@ class CmsServiceProvider extends ServiceProvider
             return $className;
         }
     }
+
 
 
 }
