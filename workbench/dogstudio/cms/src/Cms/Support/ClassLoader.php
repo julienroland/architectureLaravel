@@ -1,11 +1,5 @@
 <?php namespace Cms\Support;
 
-/**
- * Class loader
- *
- * A simple autoloader used by October, it expects the folder names
- * to be lower case and the file name to be capitalized as per the class name.
- */
 class ClassLoader
 {
     /**

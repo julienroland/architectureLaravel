@@ -1,0 +1,3 @@
+"illuminate/support": "dev-maste",
+"Illuminate/Console/Command": "~5.0",
+"Illuminate/Database/Migrations/Migrator": "~5.0",

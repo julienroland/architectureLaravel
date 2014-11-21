@@ -15,6 +15,6 @@ class RouterServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        require 'router.php';
+        require __DIR__ . '/../../Router/router.php';
     }
 }

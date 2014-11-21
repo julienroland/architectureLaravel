@@ -143,7 +143,7 @@ return [
        * Dogstudio/cms
        *
        * */
-        'Cms\Providers\CmsServiceProvider',
+        'Cms\CmsServiceProvider',
         /* *
          * CMS
          *
