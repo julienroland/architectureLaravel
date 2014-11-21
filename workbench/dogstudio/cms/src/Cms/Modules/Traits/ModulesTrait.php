@@ -4,12 +4,6 @@ use Illuminate\Support\Str;
 
 trait ModulesTrait
 {
-    private $string;
-
-//    public function __construct(Str $string)
-//    {
-//        $this->string = $string;
-//    }
 
     protected function getSeeder($name)
     {
@@ -31,5 +25,20 @@ trait ModulesTrait
     protected function getStudly($name)
     {
         return Str::studly($name);
+    }
+
+    protected function getModuleByName($name)
+    {
+        return $this->app[$name];
+    }
+
+    protected function getPublicAssetsDirectory($name)
+    {
+        return public_path() . '/' . $this->getAssetsPathName() . '/' . $name;
+    }
+
+    protected function getAssetsPathName()
+    {
+        return 'Assets';
     }
 }

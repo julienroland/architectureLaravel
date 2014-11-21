@@ -31,7 +31,7 @@ class MigrateCommand extends Command
 
     protected $name = 'module:migrate';
 
-    protected $description = 'Migrate a module';
+    protected $description = 'Migrate module(s)';
 
     public function fire()
     {

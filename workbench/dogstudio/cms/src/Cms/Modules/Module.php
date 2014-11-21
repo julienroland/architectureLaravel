@@ -1,6 +1,7 @@
 <?php namespace Cms\Modules;
 
 use Cms\Exceptions\NotFoundException;
+use Cms\Modules\Traits\ModulesTrait;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Fluent;
 
@@ -9,6 +10,8 @@ class Module
     private $name;
     private $manager;
     private $boot = false;
+
+    use ModulesTrait;
 
     public function __construct($name, $manager)
     {
@@ -75,6 +78,11 @@ class Module
     public function getMigrationPath()
     {
         return $this->getPath() . 'Database/Migrations';
+    }
+
+    public function getAssetsPath()
+    {
+        return $this->getPath() . $this->getAssetsPathName();
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php namespace Cms\Providers\Boot;
 
 use Cms\Console\Module\Commands\MigrateCommand;
+use Cms\Console\Module\Commands\PublishAssetCommand;
 use Cms\Console\Module\Commands\SeedCommand;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,7 +25,7 @@ class ConsoleModuleServiceProvider extends ServiceProvider
 //        'MigrateRollback',
 //        'Migration',
 //        'Model',
-//        'Publish',
+        'PublishAsset',
 //        'PublishMigration',
         'Seed',
 
@@ -33,11 +34,13 @@ class ConsoleModuleServiceProvider extends ServiceProvider
     public function register()
     {
         foreach ($this->commandsList as $command) {
-            $this->{'register' . $command . 'Command'}();
+            $this->{'register' . ucfirst($command) . 'Command'}();
         }
         $this->commands(
             'command.module.migrate',
-            'command.module.seed');
+            'command.module.seed',
+            'command.module.publishAsset'
+        );
 
     }
 
@@ -51,8 +54,15 @@ class ConsoleModuleServiceProvider extends ServiceProvider
 
     protected function registerSeedCommand()
     {
-        $this->app->singleton('command.module.seed', function () {
-            return new SeedCommand;
+        $this->app->singleton('command.module.seed', function ($app) {
+            return new SeedCommand($app);
+        });
+    }
+
+    protected function registerPublishAssetCommand()
+    {
+        $this->app->singleton('command.module.publishAsset', function ($app) {
+            return new PublishAssetCommand($app, $app['files'], $app['modules']);
         });
     }
 

@@ -31,6 +31,7 @@ class ModuleManager
     {
         return $this->filterByStatus($this->activeStatus);
     }
+
     public function getDisabled()
     {
         return $this->filterByStatus($this->inactiveStatus);
@@ -39,28 +40,25 @@ class ModuleManager
     public function asset($module, $asset)
     {
         $asset = $this->getAsset($module, $asset);
-        $this->isNotExist($asset);
         echo $asset;
     }
 
     public function style($module, $asset)
     {
         $asset = $this->getAsset($module, $asset);
-        $this->isNotExist($asset);
         echo $this->addInStyleTag($asset);
     }
 
     public function script($module, $asset)
     {
         $asset = $this->getAsset($module, $asset);
-        $this->isNotExist($asset);
         echo $this->addInScriptTag($asset);
     }
 
     private function getAsset($module = '', $asset = '')
     {
         return str_replace([':module', ':asset'], [$module, $asset],
-            base_path() . '/' . $this->path . '/' . ucfirst(':module') . '/' . $this->assetPath . '/' . ':asset');
+            '/' . $this->assetPath . '/' . ucfirst(':module') . '/' . ':asset');
     }
 
     private function isNotExist($asset)
@@ -72,12 +70,12 @@ class ModuleManager
 
     private function addInStyleTag($asset)
     {
-        return '<link rel="stylesheet" type="text/css" href="' . $asset . '">';
+        return '<link rel="stylesheet" type="text/css" href="' . $asset . '.css">';
     }
 
     private function addInScriptTag($asset)
     {
-        return '<script type="text/javascript" src="' . $asset . '"></script>';
+        return '<script type="text/javascript" src="' . $asset . '.js"></script>';
     }
 
     private function hasNotModule($directories)
