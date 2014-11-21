@@ -1,4 +1,4 @@
-<?php namespace Cms\Router;
+<?php namespace Cms\Providers\Boot;
 
 use Illuminate\Routing\Router;
 use Illuminate\Contracts\Routing\UrlGenerator;

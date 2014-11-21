@@ -144,8 +144,6 @@ return [
        *
        * */
         'Cms\Providers\CmsServiceProvider',
-        'Cms\Router\RouterServiceProvider',
-        'Cms\Errors\ErrorsServiceProvider',
         /* *
          * CMS
          *

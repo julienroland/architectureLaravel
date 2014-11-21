@@ -1,4 +1,4 @@
-<?php namespace Cms\Errors;
+<?php namespace Cms\Providers\Booted;
 
 use Illuminate\Support\ServiceProvider;
 use Whoops\Handler\PrettyPageHandler;
