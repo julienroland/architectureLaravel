@@ -1,6 +1,7 @@
 <?php namespace Cms\Providers\Boot;
 
-use Cms\Console\Commands\InstallCommand;
+use Cms\Console\Install\InstallCommand;
+use Cms\Console\Install\Factory\UserDriverFactory;
 use Cms\Console\Module\Commands\MigrateCommand;
 use Cms\Console\Module\Commands\PublishAssetCommand;
 use Cms\Console\Module\Commands\PublishCommand;
@@ -49,6 +50,10 @@ class ConsoleModuleServiceProvider extends ServiceProvider
 
     }
 
+    /* *
+    * Module command
+    *
+     * */
     protected function registerMigrateCommand()
     {
         $this->app->singleton('command.module.migrate', function ($app) {
@@ -81,10 +86,16 @@ class ConsoleModuleServiceProvider extends ServiceProvider
         });
     }
 
+    /* *
+    * End module command
+    *
+     * */
+
     protected function registerInstallCommand()
     {
         $this->app->singleton('command.module.install', function ($app) {
-            return new InstallCommand($app, $app['files'], $app['User\Repositories\UserRepository']);
+            return new InstallCommand($app, $app['files'], $app['User\Repositories\UserRepository'],
+                new UserDriverFactory);
         });
     }
 

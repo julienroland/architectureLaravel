@@ -1,62 +1,108 @@
-<?php namespace Cms\Console\Commands;
+<?php namespace Cms\Console\Install;
 
 use Carbon\Carbon;
+use Cms\Console\Install\Factory\UserDriverFactory;
 use Dotenv;
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
-use User\Repositories\UserRepository;
 
 class InstallCommand extends Command
 {
-
     protected $name = 'cms:install';
 
     protected $description = 'Install the CMS';
+
+    protected $userDriverlist = [0 => 'None', 'sentry', 'sentinel (paying)'];
 
     private $user;
 
     private $file;
 
     private $app;
+    /**
+     * @var
+     */
+    private $userDriver;
 
-    public function __construct($app, $file, $user)
+    public function __construct($app, $file, $user, UserDriverFactory $userDriverFactory)
     {
         parent::__construct();
         $this->app = $app;
-        $this->user = $user;
         $this->file = $file;
+        $this->userDriver = $userDriverFactory;
+        $this->user = $user;
     }
 
     public function fire()
     {
         $this->comment('Starting the installation process...');
+
         $this->configureDatabase();
-        $userDriverlist = [0 => 'None', 'sentry', 'sentinel (paying)'];
-        $driver = $this->choice("Which user driver do you wish use ?", $userDriverlist);
-        if (isset($driver) && !empty($driver) && $driver !== 'None') {
-            $this->{'runUser' . $driver . 'Commands'}();
-            $isUserCreated = true;
-        } else {
-            $isUserCreated = false;
-        }
 
-        $this->runMigrations();
+        $isUserCreated = $this->userDriver();
 
-//        $this->publishAssets();
+        $this->publish();
+
+        $this->createFirstUser();
+
         if ($isUserCreated) {
             $this->blockMessage(
                 'Success!',
-                'Platform ready! You can now login with your username and password at /backend'
+                'Cms ready! You can now login with your username and password at /backend'
             );
         } else {
             $this->blockMessage(
                 'Success!',
-                'Platform ready! But you need to install a user driver and create an account'
+                'Cms ready! But you need to install a user driver and create an account'
             );
         }
+    }
+
+    protected function createFirstUser()
+    {
+        $this->line('Creating an Admin user account...');
+
+        $firstname = $this->ask('Enter your first name');
+        $lastname = $this->ask('Enter your last name');
+        $email = $this->ask('Enter your email address');
+        $password = $this->secret('Enter a password');
+
+        $userInfo = [
+            'first_name' => ucfirst($firstname),
+            'last_name' => ucfirst($lastname),
+            'email' => $email,
+            'password' => $password,
+        ];
+        $this->user->createWithRoles($userInfo, ['Admin']);
+
+        $this->info('Admin account created!');
+    }
+
+    /**
+     * @return array
+     */
+    protected function getUserDriverList()
+    {
+        return $this->userDriverlist;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function userDriver()
+    {
+        $userDriverlist = $this->getUserDriverList();
+
+        $driver = $this->choice("Which user driver do you wish use ?", $userDriverlist);
+
+        if (isset($driver) && !empty($driver) && $driver !== 'None') {
+            if ($this->userDriver->handle($this, $this->app, $this->file, $driver)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -106,25 +152,7 @@ class InstallCommand extends Command
     /**
      * Create the first user that'll have admin access
      */
-    private function createFirstUser()
-    {
-        $this->line('Creating an Admin user account...');
 
-        $firstname = $this->ask('Enter your first name');
-        $lastname = $this->ask('Enter your last name');
-        $email = $this->ask('Enter your email address');
-        $password = $this->secret('Enter a password');
-
-        $userInfo = [
-            'first_name' => $firstname,
-            'last_name' => $lastname,
-            'email' => $email,
-            'password' => $password,
-        ];
-        $this->user->createWithRoles($userInfo, ['Admin']);
-
-        $this->info('Admin account created!');
-    }
 
     /**
      * Run migrations specific to Sentinel
@@ -134,27 +162,7 @@ class InstallCommand extends Command
         $this->call('migrate', ['--package' => 'cartalyst/sentinel']);
     }
 
-    /**
-     * Run the migrations
-     */
-    private function runMigrations()
-    {
-        $this->call('module:migrate', ['module' => 'Setting']);
 
-        $this->info('Application migrated!');
-    }
-
-    private function runUserSeeds()
-    {
-        $this->call('module:seed', ['module' => 'User']);
-    }
-
-    /**
-     * Symfony style block messages
-     * @param $title
-     * @param $message
-     * @param string $style
-     */
     protected function blockMessage($title, $message, $style = 'info')
     {
         $formatter = $this->getHelperSet()->get('formatter');
@@ -163,12 +171,9 @@ class InstallCommand extends Command
         $this->line($formattedBlock);
     }
 
-    /**
-     * Publish the CMS assets
-     */
-    private function publishAssets()
+    private function publish()
     {
-        $this->call('module:publish', ['module' => 'Core']);
+        $this->call('module:publish');
     }
 
     /**
@@ -238,23 +243,6 @@ class InstallCommand extends Command
         $this->laravel['config']['database.connections.mysql.password'] = $databasePassword;
     }
 
-    private function runSentryMigrations()
-    {
-        $this->call('migrate', ['--package' => 'cartalyst/sentry']);
-    }
-
-    private function runSentryConfigFile()
-    {
-        $path = 'modules/User/Config/userdriver.php';
-        $string = "<?php return " . PHP_EOL . "[" . PHP_EOL . "'driver'=>'Sentry'," . PHP_EOL . "'seeder'=>" . PHP_EOL . "[" . PHP_EOL . "'SentryGroupSeedTableSeeder'," . PHP_EOL . "'SentryUserSeedTableSeeder'" . PHP_EOL . "]" . PHP_EOL . "];";
-        $file = $this->file->put($path, $string);
-
-        if ($file) {
-            $this->info('User driver define');
-        }
-        $this->comment('Publishing Sentry config');
-        $this->call('publish:config', ['package' => 'cartalyst/sentry']);
-    }
 
     private function runSentinelConfigFile()
     {
@@ -273,29 +261,5 @@ class InstallCommand extends Command
         }
     }
 
-    private function setSentryUserEntity()
-    {
-        $entity = '<?php namespace User\Entities;
-
-use Cartalyst\Sentry\Users\Eloquent\User as SentryUser;
-use Laracasts\Presenter\PresentableTrait;
-
-class User extends SentryUser
-{
-    use PresentableTrait;
-
-    protected $fillable = [
-        "email",
-        "password",
-        "permissions",
-        "first_name",
-        "last_name"
-    ];
-
-    protected $presenter = "User\\\Presenters\\\UserPresenter";
-}
-';
-        $this->file->put('modules/User/Entities/User.php', $entity);
-    }
 
 }
