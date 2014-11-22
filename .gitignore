@@ -1,6 +1,5 @@
 .env
-.*
-!/.gitignore
+.env*
 vendor
 # PhpStorm
 .idea
