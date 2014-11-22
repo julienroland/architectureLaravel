@@ -4,27 +4,25 @@ use Cms\Modules\Traits\ModulesTrait;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Illuminate\Support\Str;
 
 class SeedCommand extends Command
 {
-    use ModulesTrait;
-
     protected $name = 'module:seed';
 
     protected $description = 'Seed module(s)';
 
-    public function fire()
+    use BaseModuleCommandTraits;
+    use ModulesTrait;
+
+    public function fire($moduleArgument = null)
     {
-        $this->module = $this->laravel['modules'];
-        $module = Str::studly($this->argument('module'));
+        $this->setModuleInArgument($moduleArgument);
+        $module = $this->getModuleInArgument();
         if ($module) {
             $this->seed($module);
         } else {
-            foreach ($this->module->all() as $module) {
-                if ($module->active()) {
-                    $this->seed($module->getName());
-                }
+            foreach ($this->getModules()->getEnabled() as $module) {
+                $this->seed($module);
             }
             return $this->info("All active modules seeded");
         }
@@ -32,12 +30,8 @@ class SeedCommand extends Command
 
     protected function seed($name)
     {
-        $params = [
-            '--class' => $this->option('class') ?: $this->getSeeder($name)
-        ];
-        if ($option = $this->option('database')) {
-            $params['--database'] = $option;
-        }
+        $params = $this->params($name);
+        $params = $this->options($params);
         $this->comment("Seeding module: $name");
         $this->call('db:seed', $params);
     }
@@ -56,5 +50,26 @@ class SeedCommand extends Command
             array('database', null, InputOption::VALUE_OPTIONAL, 'The database connection to seed.'),
             array('force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production.'),
         );
+    }
+
+    /**
+     * @param $name
+     * @return array
+     */
+    protected function params($name)
+    {
+        $params = [
+            '--class' => $this->option('class') ?: $this->getSeeder($name)
+        ];
+        return $params;
+    }
+
+    protected function options($params)
+    {
+        if ($option = $this->option('database')) {
+            $params['--database'] = $option;
+            return $params;
+        }
+        return $params;
     }
 }

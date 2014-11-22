@@ -2,7 +2,6 @@
 
 use Cms\Console\Module\BaseModuleCommandTrait;
 use Cms\Console\Module\Traits\BaseModuleCommandTraits;
-use Cms\Modules\Module;
 use Cms\Modules\Traits\ModulesTrait;
 use Illuminate\Console\Command;
 use Illuminate\Database\Migrations\Migrator;
