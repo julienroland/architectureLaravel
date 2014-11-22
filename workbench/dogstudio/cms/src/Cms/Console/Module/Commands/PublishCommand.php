@@ -35,11 +35,11 @@ class PublishCommand extends Command
     {
         $moduleArgument = $this->argument('module');
         if (isset($moduleArgument)) {
-            $this->publish($moduleArgument);
-        } else {
-            foreach ($this->getModules()->allEnabled() as $moduleArgument) {
-                $this->publish($moduleArgument->getName());
-            }
+            return $this->publish($moduleArgument);
+        }
+        foreach ($this->getModules()->allEnabled() as $moduleArgument) {
+            $this->publish($moduleArgument->getName());
+
         }
     }
 

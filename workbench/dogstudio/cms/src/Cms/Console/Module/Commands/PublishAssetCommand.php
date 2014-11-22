@@ -9,20 +9,13 @@ use Illuminate\Support\Str;
 
 class PublishAssetCommand extends Command
 {
-    use ModulesTrait;
-
-    /**
-     * @var
-     */
     private $app;
-    /**
-     * @var
-     */
+
     private $file;
-    /**
-     * @var
-     */
+
     private $module;
+
+    protected $description = 'Publish asset from module(s)';
 
     public function __construct($app, $file, $module)
     {
@@ -32,20 +25,20 @@ class PublishAssetCommand extends Command
         $this->module = $module;
     }
 
-    protected $name = 'module:publishAsset';
+    use BaseModuleCommandTraits;
+    use ModulesTrait;
 
-    protected $description = 'Publish asset from module(s)';
-
-    public function fire()
+    public function fire($moduleArgument = null)
     {
-        $this->module = $this->laravel['modules'];
-        $module = Str::studly($this->argument('module'));
+        $this->setModuleInArgument($moduleArgument);
+        $module = $this->getModuleInArgument();
         if ($module) {
-            $module = $this->getModuleByName($module);
-            $this->publish($module);
-        } else {
-            $this->publishAll();
+            return $this->publish($module);
         }
+        foreach ($this->getModules()->getEnabled() as $module) {
+            $this->publish($module);
+        }
+        return $this->info("All active modules published");
     }
 
     protected function publish($module)
@@ -54,26 +47,18 @@ class PublishAssetCommand extends Command
         if (!$this->file->isDirectory($assetDir)) {
             return $this->error("Error:: Can't find assets directory for module {$module->getName()}");
         }
+        //public/Assets/...
         $destinationDir = $this->getPublicAssetDirectory($module->getName());
 
         $this->comment("Publishing module: $module");
 
+        //Copy assets of a module to his public path
         if ($this->file->copyDirectory($assetDir, $destinationDir)) {
             $this->info("Module {$module->getName()} published");
         } else {
             $this->error("Error:: Module {$module->getName()} not published");
         }
 
-    }
-
-    private function publishAll()
-    {
-        foreach ($this->module->all() as $module) {
-            if ($module->active()) {
-                $this->publish($module);
-            }
-        }
-        return $this->info("All active modules published");
     }
 
     private function getPublicAssetDirectory($name)
