@@ -2,6 +2,7 @@
 
 use Cms\Console\Module\Commands\MigrateCommand;
 use Cms\Console\Module\Commands\PublishAssetCommand;
+use Cms\Console\Module\Commands\PublishCommand;
 use Cms\Console\Module\Commands\SeedCommand;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,6 +27,7 @@ class ConsoleModuleServiceProvider extends ServiceProvider
 //        'Migration',
 //        'Model',
         'PublishAsset',
+        'Publish',
 //        'PublishMigration',
         'Seed',
 
@@ -39,7 +41,8 @@ class ConsoleModuleServiceProvider extends ServiceProvider
         $this->commands(
             'command.module.migrate',
             'command.module.seed',
-            'command.module.publishAsset'
+            'command.module.publishAsset',
+            'command.module.publish'
         );
 
     }
@@ -63,6 +66,16 @@ class ConsoleModuleServiceProvider extends ServiceProvider
     {
         $this->app->singleton('command.module.publishAsset', function ($app) {
             return new PublishAssetCommand($app, $app['files'], $app['modules']);
+        });
+    }
+
+    protected function registerPublishCommand()
+    {
+        $this->app->singleton('command.module.publish', function ($app) {
+            return new PublishCommand(
+                $app['command.module.migrate'],
+                $app['command.module.seed'],
+                $app['command.module.publishAsset']);
         });
     }
 

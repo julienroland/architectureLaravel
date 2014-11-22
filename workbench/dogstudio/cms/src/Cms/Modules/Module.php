@@ -2,14 +2,20 @@
 
 use Cms\Exceptions\NotFoundException;
 use Cms\Modules\Traits\ModulesTrait;
+use Cms\Support\ErrorHandler;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Fluent;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 class Module
 {
     private $name;
     private $manager;
     private $boot = false;
+    /**
+     * @var ErrorHandler
+     */
+    private $error;
 
     use ModulesTrait;
 
@@ -19,6 +25,7 @@ class Module
         $this->manager = $manager;
         $this->file = new Filesystem;
         $this->path = $this->getPath($this->name);
+        $this->error = new ErrorHandler;
     }
 
     /**
@@ -246,12 +253,18 @@ class Module
             throw new NotFoundException("File module.json from module: {$this->name} not found");
         }
 
-        $this->config = $this->decodeJson($this->file->get($this->path . 'module.json'));
+        $config = $this->decodeJson($this->file->get($this->path . 'module.json'));
+        if ($this->error->json()) {
+            $this->config = $this->decodeJson($this->file->get($this->path . 'module.json'));
+        }
         return $this;
     }
 
     private function getStatus()
     {
+        if (!isset($this->config) || is_null($this->config)) {
+            $this->getModuleConfig();
+        }
         return $this->config->active;
     }
 

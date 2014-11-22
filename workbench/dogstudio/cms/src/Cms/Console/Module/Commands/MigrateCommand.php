@@ -1,12 +1,14 @@
 <?php namespace Cms\Console\Module\Commands;
 
+use Cms\Console\Module\BaseModuleCommandTrait;
+use Cms\Console\Module\Traits\BaseModuleCommandTraits;
 use Cms\Modules\Module;
 use Cms\Modules\Traits\ModulesTrait;
 use Illuminate\Console\Command;
 use Illuminate\Database\Migrations\Migrator;
+use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Illuminate\Support\Str;
 
 class MigrateCommand extends Command
 {
@@ -21,37 +23,38 @@ class MigrateCommand extends Command
      */
     private $module;
 
+    protected $name = 'module:migrate';
+
+    protected $description = 'Migrate module(s)';
+
     public function __construct($app, Migrator $migrator, $module)
     {
-        parent::__construct();
+        parent::__construct(new Str);
         $this->migrator = $migrator;
         $this->app = $app;
         $this->modules = $module;
     }
 
-    protected $name = 'module:migrate';
+    use BaseModuleCommandTraits;
 
-    protected $description = 'Migrate module(s)';
-
-    public function fire()
+    public function fire($moduleArgument = null)
     {
-        $this->module = $this->laravel['modules'];
-        $module = Str::studly($this->argument('module'));
+        $this->setModuleInArgument($moduleArgument);
+        $module = $this->getModuleInArgument();
         if ($module) {
-            $pretend = $this->input->getOption('pretend');
-            $path = $this->app[$module]->getMigrationPath();
-            $this->comment("Migrating module: $module ...");
-            $this->migrator->run($path, $pretend);
+//            $pretend = $this->input->getOption('pretend');
+            $path = $this->module->getMigrationPath();
+            $this->comment("Migrating module: {$module->getName()} ...");
+            $this->migrator->run($path);
             foreach ($this->migrator->getNotes() as $note) {
                 $this->comment($note);
             }
             if ($this->input->getOption('seed')) {
-                $this->call('module:seed' . $module, ['--force' => true]);
+                $this->seedModuleCommand();
             }
-//            $this->call('migrate', $this->getParameter($module));
             return $this->info("Module $module migrated !");
         } else {
-            foreach ($this->modules->getEnabled() as $module) {
+            foreach ($this->getModules()->getEnabled() as $module) {
                 $pretend = $this->input->getOption('pretend');
                 $path = $module->getMigrationPath();
                 $this->comment("Migrating module: {$module->getName()} ...");
@@ -60,18 +63,13 @@ class MigrateCommand extends Command
                     $this->comment($note);
                 }
                 if ($this->input->getOption('seed')) {
-                    $this->call('module:seed ' . $module->getName(), ['--force' => true]);
+                    $this->seedModuleCommand();
                 }
-//            $this->call('migrate', $this->getParameter($module));
                 $this->info("Module {$module->getName()} migrated !");
             }
             return $this->info("All modules migrated !");
 
         }
-//        foreach ($this->module->all() as $name) {
-//            $this->dbSeed($name);
-//        }
-//        return $this->info("All modules seeded.");
     }
 
     protected function prepareDatabase()
@@ -126,4 +124,5 @@ class MigrateCommand extends Command
             ),
         );
     }
+
 }

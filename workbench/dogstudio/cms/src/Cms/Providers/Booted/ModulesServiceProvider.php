@@ -2,6 +2,7 @@
 
 use Cms\Modules\Module;
 use Cms\Modules\ModuleManager;
+use Cms\Support\ErrorHandler;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 

@@ -41,7 +41,6 @@ class PublishAssetCommand extends Command
         $this->module = $this->laravel['modules'];
         $module = Str::studly($this->argument('module'));
         if ($module) {
-            $this->comment("Module $module will be published...");
             $module = $this->getModuleByName($module);
             $this->publish($module);
         } else {

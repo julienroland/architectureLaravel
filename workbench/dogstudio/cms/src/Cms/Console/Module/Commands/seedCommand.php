@@ -19,19 +19,18 @@ class SeedCommand extends Command
         $this->module = $this->laravel['modules'];
         $module = Str::studly($this->argument('module'));
         if ($module) {
-            $this->comment("Module $module will be seeded...");
-            $this->dbSeed($module);
+            $this->seed($module);
         } else {
             foreach ($this->module->all() as $module) {
                 if ($module->active()) {
-                    $this->dbSeed($module->getName());
+                    $this->seed($module->getName());
                 }
             }
             return $this->info("All active modules seeded");
         }
     }
 
-    protected function dbSeed($name)
+    protected function seed($name)
     {
         $params = [
             '--class' => $this->option('class') ?: $this->getSeeder($name)
@@ -39,7 +38,7 @@ class SeedCommand extends Command
         if ($option = $this->option('database')) {
             $params['--database'] = $option;
         }
-        $this->comment("Seeding module: $name .");
+        $this->comment("Seeding module: $name");
         $this->call('db:seed', $params);
     }
 

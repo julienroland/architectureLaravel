@@ -27,6 +27,20 @@ class ModuleManager
         return $modules;
     }
 
+    public function allEnabled()
+    {
+        $activeModules = [];
+        $directories = $this->file->directories(base_path() . '/modules');
+        $this->hasNotModule($directories);
+        foreach ($directories as $module) {
+            $module = new Module(basename($module), $this);
+            if ($module->active()) {
+                $activeModules[] = $module;
+            }
+        }
+        return $activeModules;
+    }
+
     public function getEnabled()
     {
         return $this->filterByStatus($this->activeStatus);
