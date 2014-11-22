@@ -1,37 +1,16 @@
 <?php namespace Cms\Console\Module\Commands;
 
 use Cms\Console\Module\Traits\BaseModuleCommandTraits;
-use Cms\Modules\Module;
 use Cms\Modules\Traits\ModulesTrait;
 use Illuminate\Console\Command;
-use Illuminate\Database\Migrations\Migrator;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use Illuminate\Support\Str;
 
 class PublishCommand extends Command
 {
-    use ModulesTrait;
-
-    /**
-     * @var
-     */
-    private $migrator;
-    /**
-     * @var Module
-     */
-    private $module;
-    /**
-     * @var
-     */
     private $assetCommand;
-    /**
-     * @var
-     */
+
     private $migrateCommand;
-    /**
-     * @var
-     */
+
     private $seedCommand;
 
     protected $name = 'module:publish';
@@ -50,6 +29,7 @@ class PublishCommand extends Command
     }
 
     use BaseModuleCommandTraits;
+    use ModulesTrait;
 
     public function fire()
     {
@@ -60,7 +40,6 @@ class PublishCommand extends Command
             foreach ($this->getModules()->allEnabled() as $moduleArgument) {
                 $this->publish($moduleArgument->getName());
             }
-
         }
     }
 

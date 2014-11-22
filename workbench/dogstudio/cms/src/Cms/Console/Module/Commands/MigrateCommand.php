@@ -12,15 +12,8 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class MigrateCommand extends Command
 {
-    use ModulesTrait;
-
-    /**
-     * @var
-     */
     private $migrator;
-    /**
-     * @var Module
-     */
+
     private $module;
 
     protected $name = 'module:migrate';
@@ -36,23 +29,14 @@ class MigrateCommand extends Command
     }
 
     use BaseModuleCommandTraits;
+    use ModulesTrait;
 
     public function fire($moduleArgument = null)
     {
         $this->setModuleInArgument($moduleArgument);
         $module = $this->getModuleInArgument();
         if ($module) {
-//            $pretend = $this->input->getOption('pretend');
-            $path = $this->module->getMigrationPath();
-            $this->comment("Migrating module: {$module->getName()} ...");
-            $this->migrator->run($path);
-            foreach ($this->migrator->getNotes() as $note) {
-                $this->comment($note);
-            }
-            if ($this->input->getOption('seed')) {
-                $this->seedModuleCommand();
-            }
-            return $this->info("Module $module migrated !");
+            return $this->migrate($module);
         } else {
             foreach ($this->getModules()->getEnabled() as $module) {
                 $pretend = $this->input->getOption('pretend');
@@ -97,9 +81,6 @@ class MigrateCommand extends Command
         if ($option = $this->option('database')) {
             $params['--database'] = $option;
         }
-        if ($option = $this->option('pretend')) {
-            $params['--pretend'] = $option;
-        }
         if ($option = $this->option('force')) {
             $params['--force'] = $option;
         }
@@ -109,11 +90,9 @@ class MigrateCommand extends Command
     protected function getOptions()
     {
         return array(
-            array('bench', null, InputOption::VALUE_OPTIONAL, 'The name of the workbench to migrate . ', null),
             array('database', null, InputOption::VALUE_OPTIONAL, 'The database connection to use.'),
             array('force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production . '),
             array('path', null, InputOption::VALUE_OPTIONAL, 'The path to migration files . ', null),
-            array('package', null, InputOption::VALUE_OPTIONAL, 'The package to migrate . ', null),
             array('pretend', null, InputOption::VALUE_NONE, 'Dump the SQL queries that would be run . '),
             array(
                 'seed',
@@ -123,6 +102,36 @@ class MigrateCommand extends Command
                         seed} task should be re - run . '
             ),
         );
+    }
+
+    /**
+     * @param $module
+     */
+    private function migrate($module)
+    {
+        $path = $this->module->getMigrationPath();
+        $this->comment("Migrating module: {$module->getName()} ...");
+
+        //We use the laravel migrator class to run migration
+        $this->migrator->run($path);
+        $this->writeMigrationInfos();
+        $this->seedIfInOption();
+
+        return $this->info("Module $module migrated !");
+    }
+
+    private function writeMigrationInfos()
+    {
+        foreach ($this->migrator->getNotes() as $note) {
+            $this->comment($note);
+        }
+    }
+
+    private function seedIfInOption()
+    {
+        if ($this->input->getOption('seed')) {
+            $this->seedModuleCommand();
+        }
     }
 
 }
