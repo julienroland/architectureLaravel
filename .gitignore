@@ -1,5 +1,6 @@
 /vendor
-.env.*
+.env*
+.env.old*
 # PhpStorm
 .idea
 .vagrant
