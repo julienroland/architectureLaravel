@@ -1,5 +1,6 @@
 <?php namespace Cms\Console\Module\Commands;
 
+use Cms\Console\Module\Traits\BaseModuleCommandTraits;
 use Cms\Modules\Traits\ModulesTrait;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -11,6 +12,8 @@ class PublishAssetCommand extends Command
     private $file;
 
     private $module;
+
+    protected $name = 'module:publishAsset';
 
     protected $description = 'Publish asset from module(s)';
 

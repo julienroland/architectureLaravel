@@ -53,7 +53,7 @@ class MigrateCommand extends Command
         $this->writeMigrationInfos();
         $this->seedIfInOption();
 
-        return $this->info("Module $module migrated !");
+        $this->info("Module $module migrated !");
     }
 
     protected function prepareDatabase()

@@ -1,5 +1,6 @@
 <?php namespace Cms\Console\Module\Commands;
 
+use Cms\Console\Module\Traits\BaseModuleCommandTraits;
 use Cms\Modules\Traits\ModulesTrait;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
@@ -10,6 +11,16 @@ class SeedCommand extends Command
     protected $name = 'module:seed';
 
     protected $description = 'Seed module(s)';
+    /**
+     * @var
+     */
+    private $app;
+
+    public function __construct($app)
+    {
+        parent::__construct();
+        $this->app = $app;
+    }
 
     use BaseModuleCommandTraits;
     use ModulesTrait;
@@ -19,21 +30,22 @@ class SeedCommand extends Command
         $this->setModuleInArgument($moduleArgument);
         $module = $this->getModuleInArgument();
         if ($module) {
-            $this->seed($module);
-        } else {
-            foreach ($this->getModules()->getEnabled() as $module) {
-                $this->seed($module);
-            }
-            return $this->info("All active modules seeded");
+            return $this->seed($module->getName());
         }
+        foreach ($this->getModules()->getEnabled() as $module) {
+            $this->seed($module->getName());
+        }
+        return $this->info("All active modules seeded");
+
     }
 
-    protected function seed($name)
+    protected function seed($moduleName)
     {
-        $params = $this->params($name);
+        $params = $this->params($moduleName);
         $params = $this->options($params);
-        $this->comment("Seeding module: $name");
+        $this->comment("Seeding module: $moduleName");
         $this->call('db:seed', $params);
+        $this->info("Module $moduleName seeded !");
     }
 
     protected function getArguments()
