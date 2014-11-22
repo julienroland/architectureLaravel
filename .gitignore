@@ -1,6 +1,6 @@
-/vendor
 .*
 !/.gitignore
+vendor
 # PhpStorm
 .idea
 .vagrant
