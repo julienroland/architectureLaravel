@@ -37,23 +37,24 @@ class MigrateCommand extends Command
         $module = $this->getModuleInArgument();
         if ($module) {
             return $this->migrate($module);
-        } else {
-            foreach ($this->getModules()->getEnabled() as $module) {
-                $pretend = $this->input->getOption('pretend');
-                $path = $module->getMigrationPath();
-                $this->comment("Migrating module: {$module->getName()} ...");
-                $this->migrator->run($path, $pretend);
-                foreach ($this->migrator->getNotes() as $note) {
-                    $this->comment($note);
-                }
-                if ($this->input->getOption('seed')) {
-                    $this->seedModuleCommand();
-                }
-                $this->info("Module {$module->getName()} migrated !");
-            }
-            return $this->info("All modules migrated !");
-
         }
+        foreach ($this->getModules()->getEnabled() as $module) {
+            $this->migrate($module);
+            return $this->info("All modules migrated !");
+        }
+    }
+
+    private function migrate($module)
+    {
+        $path = $this->module->getMigrationPath();
+        $this->comment("Migrating module: {$module->getName()} ...");
+
+        //We use the laravel migrator class to run migration
+        $this->migrator->run($path);
+        $this->writeMigrationInfos();
+        $this->seedIfInOption();
+
+        return $this->info("Module $module migrated !");
     }
 
     protected function prepareDatabase()
@@ -102,22 +103,6 @@ class MigrateCommand extends Command
                         seed} task should be re - run . '
             ),
         );
-    }
-
-    /**
-     * @param $module
-     */
-    private function migrate($module)
-    {
-        $path = $this->module->getMigrationPath();
-        $this->comment("Migrating module: {$module->getName()} ...");
-
-        //We use the laravel migrator class to run migration
-        $this->migrator->run($path);
-        $this->writeMigrationInfos();
-        $this->seedIfInOption();
-
-        return $this->info("Module $module migrated !");
     }
 
     private function writeMigrationInfos()
