@@ -1,5 +1,6 @@
 <?php namespace Cms\Providers\Boot;
 
+use Cms\Console\Commands\InstallCommand;
 use Cms\Console\Module\Commands\MigrateCommand;
 use Cms\Console\Module\Commands\PublishAssetCommand;
 use Cms\Console\Module\Commands\PublishCommand;
@@ -18,7 +19,7 @@ class ConsoleModuleServiceProvider extends ServiceProvider
 //        'GenerateFilter',
 //        'GenerateProvider',
 //        'GenerateRouteProvider',
-//        'Install',
+        'Install',
 //        'List',
         'Migrate',
 //        'MigrateRefresh',
@@ -42,7 +43,8 @@ class ConsoleModuleServiceProvider extends ServiceProvider
             'command.module.migrate',
             'command.module.seed',
             'command.module.publishAsset',
-            'command.module.publish'
+            'command.module.publish',
+            'command.module.install'
         );
 
     }
@@ -76,6 +78,13 @@ class ConsoleModuleServiceProvider extends ServiceProvider
                 $app['command.module.migrate'],
                 $app['command.module.seed'],
                 $app['command.module.publishAsset']);
+        });
+    }
+
+    protected function registerInstallCommand()
+    {
+        $this->app->singleton('command.module.install', function ($app) {
+            return new InstallCommand($app, $app['files'], $app['User\Repositories\UserRepository']);
         });
     }
 
