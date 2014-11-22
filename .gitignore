@@ -1,6 +1,6 @@
 /vendor
-.env*
-.env.old*
+.*
+!/.gitignore
 # PhpStorm
 .idea
 .vagrant
